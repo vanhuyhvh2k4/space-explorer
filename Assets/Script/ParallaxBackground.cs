@@ -13,7 +13,7 @@ public class PrallaxBackground : MonoBehaviour
 
     void Update()
     {
-        float moveX = moveSpeed * Time.deltaTime;
+        float moveX = moveSpeed * PlayerController.Instance.boost * Time.deltaTime;
         transform.position += new Vector3(moveX, 0);
         if (Math.Abs(transform.position.x) - backgroundWidth > 0)
         {
