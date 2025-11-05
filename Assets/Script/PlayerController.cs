@@ -18,12 +18,15 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float maxEnergy;
     [SerializeField] private float energyRegen;
 
+    [SerializeField] private float health;
+    [SerializeField] private float maxHealth;
+    [SerializeField] private GameObject destroyEffect;
+
     void Awake()
     {
         if (Instance != null)
         {
             Destroy(gameObject);
-            return;
         } else
         {
             Instance = this;
@@ -34,6 +37,9 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         energy = maxEnergy;
+        health = maxHealth;
+        Debug.Log($"Health initialized: {health}/{maxHealth}");
+        UIController.Instance.UpdateHealthSlider(health, maxHealth);
         UIController.Instance.UpdateEnergySlider(energy, maxEnergy);
     }
 
@@ -87,11 +93,30 @@ public class PlayerController : MonoBehaviour
             boosting = true;
         }
     }
-    
+
     private void ExitBoost()
     {
         animator.SetBool("boosting", false);
         boost = 1f;
         boosting = false;
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Obstacle"))
+        {
+            TakeDamage(1);
+        }
+    }
+
+    public void TakeDamage(int damage)
+    {
+        health -= damage;
+        UIController.Instance.UpdateHealthSlider(health, maxHealth);
+        if (health <= 0) {
+            boost = 0f;
+            gameObject.SetActive(false);
+            Instantiate(destroyEffect, transform.position, transform.rotation);
+        }
     }
 }
