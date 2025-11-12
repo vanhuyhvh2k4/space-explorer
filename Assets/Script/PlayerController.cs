@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -6,6 +7,9 @@ public class PlayerController : MonoBehaviour
 
     private Rigidbody2D rb;
     private Animator animator;
+    private SpriteRenderer spriteRenderer;
+    private Material defaultMaterial;
+    [SerializeField] private Material whiteMaterial;
     private Vector2 playerDirection;
     public float boost = 1f;
 
@@ -27,7 +31,8 @@ public class PlayerController : MonoBehaviour
         if (Instance != null)
         {
             Destroy(gameObject);
-        } else
+        }
+        else
         {
             Instance = this;
         }
@@ -36,6 +41,8 @@ public class PlayerController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        defaultMaterial = spriteRenderer.material;
         energy = maxEnergy;
         health = maxHealth;
         Debug.Log($"Health initialized: {health}/{maxHealth}");
@@ -45,7 +52,8 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        if (Time.timeScale > 0) {
+        if (Time.timeScale > 0)
+        {
 
             float directionX = Input.GetAxisRaw("Horizontal");
             float directionY = Input.GetAxisRaw("Vertical");
@@ -56,7 +64,8 @@ public class PlayerController : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Space) || Input.GetButtonDown("Fire2"))
             {
                 EnterBoost();
-            } else if (Input.GetKeyUp(KeyCode.Space) || Input.GetButtonUp("Fire2"))
+            }
+            else if (Input.GetKeyUp(KeyCode.Space) || Input.GetButtonUp("Fire2"))
             {
                 ExitBoost();
             }
@@ -91,6 +100,7 @@ public class PlayerController : MonoBehaviour
     {
         if (energy > 10)
         {
+            AudioManager.Instance.PlaySound(AudioManager.Instance.fire);
             animator.SetBool("boosting", true);
             boost = boostPower;
             boosting = true;
@@ -116,11 +126,22 @@ public class PlayerController : MonoBehaviour
     {
         health -= damage;
         UIController.Instance.UpdateHealthSlider(health, maxHealth);
-        if (health <= 0) {
+        AudioManager.Instance.PlaySound(AudioManager.Instance.hit);
+        spriteRenderer.material = whiteMaterial;
+        StartCoroutine(ResetMaterial());
+        if (health <= 0)
+        {
             boost = 0f;
             gameObject.SetActive(false);
             Instantiate(destroyEffect, transform.position, transform.rotation);
             GameManager.Instance.GameOver();
+            AudioManager.Instance.PlaySound(AudioManager.Instance.ice);
         }
+    }
+
+    IEnumerator ResetMaterial()
+    {
+        yield return new WaitForSeconds(0.2f);
+        spriteRenderer.material = defaultMaterial;
     }
 }

@@ -168,6 +168,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 70080a7db301315468f1469a6d58bbf6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Asteroid
+  whiteMaterial: {fileID: 2100000, guid: 67f7a4b229a56af45a92fa93ab7102b8, type: 2}
   sprites:
   - {fileID: 2357709100146644040, guid: 6c53dfdd2db236f4ca178cc96c8d40bc, type: 3}
   - {fileID: -725148867, guid: 6c53dfdd2db236f4ca178cc96c8d40bc, type: 3}
