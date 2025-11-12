@@ -69,6 +69,11 @@ public class PlayerController : MonoBehaviour
             {
                 ExitBoost();
             }
+
+            if (Input.GetKeyDown(KeyCode.RightShift) || Input.GetButtonDown("Fire1"))
+            {
+                PhaserWeapon.Instance.Shoot();
+            }
         }
     }
 
