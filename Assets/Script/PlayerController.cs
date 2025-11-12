@@ -14,7 +14,7 @@ public class PlayerController : MonoBehaviour
     public float boost = 1f;
 
     private bool boosting = false;
-    private float boostPower = 5f;
+    private float boostPower = 4f;
 
     [SerializeField] private float moveSpeed;
 
@@ -25,6 +25,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float health;
     [SerializeField] private float maxHealth;
     [SerializeField] private GameObject destroyEffect;
+    [SerializeField] private ParticleSystem engineEffect;
 
     void Awake()
     {
@@ -109,6 +110,7 @@ public class PlayerController : MonoBehaviour
             animator.SetBool("boosting", true);
             boost = boostPower;
             boosting = true;
+            engineEffect.Play();
         }
     }
 
@@ -117,6 +119,7 @@ public class PlayerController : MonoBehaviour
         animator.SetBool("boosting", false);
         boost = 1f;
         boosting = false;
+        engineEffect.Stop();
     }
 
     private void OnCollisionEnter2D(Collision2D collision)

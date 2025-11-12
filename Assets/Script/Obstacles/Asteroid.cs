@@ -7,6 +7,8 @@ public class Asteroid : MonoBehaviour
     private Rigidbody2D rb;
     private Material defaultMaterial;
     [SerializeField] private Material whiteMaterial;
+    [SerializeField] private GameObject destroyEffect;
+    [SerializeField] private int lives;
     [SerializeField] private Sprite[] sprites;
     void Start()
     {
@@ -17,6 +19,8 @@ public class Asteroid : MonoBehaviour
         float pushX = Random.Range(-1f, 0f);
         float pushY = Random.Range(-1f, 1f);
         rb.linearVelocity = new Vector2(pushX, pushY);
+        float randomScale = Random.Range(0.5f, 1f);
+        transform.localScale = new Vector3(randomScale, randomScale);
     }
 
     void Update()
@@ -35,6 +39,14 @@ public class Asteroid : MonoBehaviour
         {
             spriteRenderer.material = whiteMaterial;
             StartCoroutine(ResetMaterial());
+            AudioManager.Instance.PlayModifiedSound(AudioManager.Instance.hitRock);
+            lives--;
+            if (lives <= 0)
+            {
+                Instantiate(destroyEffect, transform.position, transform.rotation);
+                AudioManager.Instance.PlayModifiedSound(AudioManager.Instance.boom2);
+                Destroy(gameObject);
+            }
         }
     }
 
